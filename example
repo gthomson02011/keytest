@@ -1,0 +1,31 @@
+# insecure_example_with_key.py
+
+import requests
+
+# ⚠️ WARNING: This is insecure, do NOT check this into version control.
+API_KEY = "O6OSgbHE76WEXu5fH2zhbnBomD34IyQaeFqwQvxXKI1KIlNsxwblm66yWfzLWN0QASqxymYcYaYvKl3y7tVvHpn5ENKHnpc6NsW5XgWSbLaPSRQd8dTBPI3oGSVyjRby"
+
+def fetch_data(endpoint: str, params: dict = None) -> dict:
+    """
+    Fetch JSON data from the given API endpoint using the exposed API key.
+    """
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Accept": "application/json",
+    }
+    response = requests.get(endpoint, headers=headers, params=params or {})
+    response.raise_for_status()
+    return response.json()
+
+def main():
+    url = "https://api.example.com/v1/resources"
+    try:
+        data = fetch_data(url, params={"limit": 10})
+        print("Fetched data:", data)
+    except requests.HTTPError as e:
+        print(f"HTTP error: {e.response.status_code} - {e.response.text}")
+    except Exception as e:
+        print("Unexpected error:", str(e))
+
+if __name__ == "__main__":
+    main()
